@@ -1,0 +1,11 @@
+{
+    "PORT": 5000,
+    "DB_URI": "mongodb+srv://sakinabanu:sakina@cluster0.2cygcsv.mongodb.net/Hospital",
+    "JWT_KEY": "CODE",
+    "SEND_SMS": {
+        "SID": "ACdb776a2f8bcc6b5246376efb77a92eb3",
+        "TOKEN": "1d818b9742fae60d63ec00089e48bfde",
+        "NUMBER": "+14246441244"
+    },
+    "URL": "http://192.168.0.104:5000"
+}
