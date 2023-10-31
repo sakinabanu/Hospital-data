@@ -37,13 +37,13 @@ router.post("/register", userRegisterValidations(), errorMiddelware, async (req,
             {
                 phonestore: userData.userverifytoken.phone,
             },
-            "CODE",
-            { expiresIn: "60000" }
+            config.get("JWT_KEY"),
+            { expiresIn: "1d" }
         );
         sendSMS({
             body: `Hi ${userData.firstName}, Please click the given link to verify your phone ${config.get(
                 "URL"
-            )}/phone/verify/${phoneToken}`,
+            )}/users/phone/verify/${phoneToken}`,
             to: userData.phone,
         });
 
@@ -54,7 +54,7 @@ router.post("/register", userRegisterValidations(), errorMiddelware, async (req,
                 emailstore: userData.userverifytoken.email,
             },
             config.get("JWT_KEY"),
-            { expiresIn: "60000" }
+            { expiresIn: "1d" }
         );
 
         console.log(emailToken, randomString());
@@ -62,9 +62,10 @@ router.post("/register", userRegisterValidations(), errorMiddelware, async (req,
         console.log(phoneToken, randomString());
         console.log("\n");
         console.log("\n");
-        console.log(`http://192.168.0.104:5000/users/phone/verify/${phoneToken}}`);
+        console.log(`http://192.168.0.104:5000/users/phone/verify/${phoneToken}`);
         console.log("\n");
-        console.log(`http://192.168.0.104:5000/users/email/verify/${emailToken}}`);
+        console.log(`http://192.168.0.104:5000/users/email/verify/${emailToken}`);
+        console.log("\n");
 
         await userData.save()
         res.status(200).json({ msg: "User Added Successfully" });
@@ -80,13 +81,16 @@ router.get("/email/verify/:token", async (req, res) => {
         let token = req.params.token;
         let verify = jwt.verify(token, config.get("JWT_KEY"));
         console.log(verify.emailstore);
-        let verifyemail =userModel.findOne({
+        let verifyemail = await userModel.findOne({
             "userverifytoken.email": verify.emailstore,
         })
+        console.log(verifyemail);
         if (!verifyemail) {
             return res.status(401).json({msg: "Token Expired"});
         }
-        return res.status(200).end({msg: "Email Verified Successfully"});
+        verifyemail.userverified.email = true;
+        await verifyemail.save()
+        return res.status(200).send({msg: "Email Verified Successfully"});
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Internal Server Error" });
@@ -98,13 +102,17 @@ router.get("/phone/verify/:token", async (req, res) => {
         let token = req.params.token;
         let verify = jwt.verify(token, config.get("JWT_KEY"));
         console.log(verify.phonestore);
-        let verifyphone =userModel.findOne({
+      
+        let verifyphone = await userModel.findOne({
             "userverifytoken.phone": verify.phonestore,
         })
+        console.log(verifyphone);
         if (!verifyphone) {
             return res.status(401).json({msg: "Token Expired"});
         }
-        return res.status(200).end({msg: "Phone Verified Successfully"});
+        verifyphone.userverified.phone = true;
+        await verifyphone.save()
+        return res.status(200).send({msg: "Phone Verified Successfully"});
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Internal Server Error" });

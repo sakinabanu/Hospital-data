@@ -5,11 +5,11 @@ let { SID, TOKEN, NUMBER } = config.get("SEND_SMS");
 
 const client = new Twilio(SID, TOKEN);
 
-async function sendSMS(Data) {
+async function sendSMS(userData) {
   try {
     await client.messages.create({
-      body: Data.body,
-      to: Data.to,
+      body: userData.body,
+      to: userData.to,
       from: NUMBER,
     });
     console.log("sms send!");

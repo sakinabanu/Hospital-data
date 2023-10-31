@@ -4,7 +4,7 @@
     "JWT_KEY": "CODE",
     "SEND_SMS": {
         "SID": "ACdb776a2f8bcc6b5246376efb77a92eb3",
-        "TOKEN": "1d818b9742fae60d63ec00089e48bfde",
+        "TOKEN": "fb9dfbdbd73c3904ba9d1e5e04631f43",
         "NUMBER": "+14246441244"
     },
     "URL": "http://192.168.0.104:5000"
